@@ -105,7 +105,7 @@ export class VentasComponent implements OnInit {
 
   ticketSale() {
     this.ventasService.startScanner = false;
-    console.log("realiza cobro");
+    // console.log("realiza cobro");
   }
 
 }
