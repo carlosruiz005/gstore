@@ -1,0 +1,63 @@
+<div class="container mt-2">
+    <h2>Punto de Venta</h2>
+    <button *ngIf="!isSaleOn()" type="button" (click)="startSale()" class="btn btn-primary">Nueva venta</button>
+    <hr />
+    <section id="descriptionSection" *ngIf="isSaleOn()">
+        <div class="row text-end">
+            <h5 class="card-title">Total</h5>
+            <h1>{{cartService.getCartTotal() | currency}}</h1>
+            <div class="text-muted">Total de artículos: {{cartService.cart.length}}</div>
+            <button (click)="finishSale()" type="button" class="btn btn-danger ">Cancelar venta</button>
+        </div>
+        <hr />
+    </section>
+    <section id="salesSection" *ngIf="isSaleOn()">
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                <form [formGroup]="barcodeForm" (ngSubmit)="searchItem()">
+                    <mdb-form-control>
+                        <input formControlName="barcodeVal" type="number" mdbInput [(ngModel)]="barcode" required type="text" id="barcode" class="form-control form-control-lg" placeholder="Código" />
+                        <!-- <div *ngIf="f.barcodeVal.errors">
+                        Código inválido
+                    </div> -->
+                    </mdb-form-control>
+                    <div class="row p-3 ">
+                        <button [disabled]="!barcodeForm.valid" type="button" type="submit" class="btn btn-outline-success">
+                            Agregar
+                        </button>
+                    </div>
+                </form>
+                <app-bar-scann *ngIf="isScannerStarted()" (currentBarCode)="getCurrentBarcode($event)"></app-bar-scann>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 p-3">
+                <h3 *ngIf="cartService.cart.length == 0 ">El carrito está vacío</h3>
+                <div *ngIf="cartService.cart.length > 0" class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Artículo</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of cartService.cart; let i = index" [attr.data-index]="i">
+                                <th scope="row">{{i+1}}</th>
+                                <td>{{item.name}}</td>
+                                <td>{{item.price | currency}}</td>
+                                <td><button (click)="cartService.deleteCartItem(item)" type="button" class="btn btn-danger" mdbTooltip="Quitar producto"><i class="far fa-trash-alt"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div *ngIf="cartService.cart.length > 0" class="row">
+                    <div class="d-block d-sm-none">
+                        Total: {{cartService.getCartTotal() | currency}}
+                    </div>
+                    <button (click)="ticketSale()" type="button" class="btn btn-success w-100">Realizar cobro</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
